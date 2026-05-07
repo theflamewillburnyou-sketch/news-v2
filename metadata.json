@@ -1,0 +1,6 @@
+{
+  "name": "Midnight News",
+  "description": "Dark-luxury news aggregator with an encrypted stealth messaging vault.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": []
+}

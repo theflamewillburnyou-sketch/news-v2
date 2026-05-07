@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user authentication, security settings, and shadow identity.",
+      "type": "object",
+      "properties": {
+        "shadowId": { "type": "string", "description": "Anonymous identifier for contact adding." },
+        "mainPinHash": { "type": "string", "description": "Bcrypt-style hash of the main PIN." },
+        "decoyPinHash": { "type": "string", "description": "Bcrypt-style hash of the decoy PIN." },
+        "failedAttempts": { "type": "integer", "description": "Counter for failed PIN attempts." },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "screenshotProtection": { "type": "boolean" },
+            "inactivityTimeout": { "type": "integer" },
+            "burnOnReadDefault": { "type": "boolean" }
+          }
+        }
+      },
+      "required": ["shadowId", "mainPinHash", "createdAt"]
+    },
+    "Message": {
+      "title": "Stealth Message",
+      "description": "Encrypted message content within a chat.",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "content": { "type": "string", "description": "Ciphertext of the message." },
+        "type": { "type": "string", "enum": ["text", "media"] },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "burnOnRead": { "type": "boolean" },
+        "readAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["senderId", "content", "timestamp"]
+    },
+    "Chat": {
+      "title": "Conversation Metadata",
+      "description": "Information about a chat between two stealth identities.",
+      "type": "object",
+      "properties": {
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "lastMessage": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["participants", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Private user data and settings."
+    },
+    "/chats/{chatId}": {
+      "schema": "Chat",
+      "description": "Active conversations."
+    },
+    "/chats/{chatId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages within a conversation."
+    }
+  }
+}
